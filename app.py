@@ -154,8 +154,9 @@ for location_name in selected_locations:
             "Location": display_name,
             "Country/Region": f"{location_data['state']}, {location_data['country']}",
             "Local Time": time_info["local_time"].strftime("%H:%M:%S"),
-            "Date": time_info["local_time"].strftime("%Y-%m-%d"),
+            "TZ Type": time_info["local_time"].tzname(),
             "Time Zone": time_info["timezone"],
+            "Date": time_info["local_time"].strftime("%Y-%m-%d"),
             "DST Active": "Yes" if time_info["is_dst"] else "No",
             "UTC Offset": str(time_info["utc_offset"]),
             "Standard Time": time_info["standard_time"].strftime("%H:%M:%S")
@@ -163,6 +164,9 @@ for location_name in selected_locations:
 
 if time_data:
     time_df = pd.DataFrame(time_data)
+    # Place Time Zone and TZ Type next to Local Time in the table
+    ordered_cols = ["Location", "Country/Region", "Local Time", "TZ Type", "Time Zone", "Date", "DST Active", "UTC Offset", "Standard Time"]
+    time_df = time_df[ordered_cols]
     st.dataframe(time_df, hide_index=True)
 else:
     st.info("Please select locations to display their time information.")
